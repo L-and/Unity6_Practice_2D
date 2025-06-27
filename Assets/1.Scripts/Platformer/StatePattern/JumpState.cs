@@ -1,4 +1,3 @@
-using Platformer;
 using UnityEngine;
 
 public class JumpState : PlayerState
@@ -15,8 +14,7 @@ public class JumpState : PlayerState
         // 점프키를 입력할 때 점프실행, 사운드 출력
         if (_player.inputJump)
         {
-            // 사운드 출력
-            SoundManager.Instance.OnJumpSound();
+
         
             // 점프 물리 적용
             _player.rb.AddForceY(_player.jumpForce, ForceMode2D.Impulse);
