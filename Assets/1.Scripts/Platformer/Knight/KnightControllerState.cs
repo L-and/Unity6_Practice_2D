@@ -3,5 +3,6 @@ enum KnightControllerState
     IDLE,
     MOVE,
     JUMP,
-    ATTACK
+    ATTACK,
+    COMBO
 }
