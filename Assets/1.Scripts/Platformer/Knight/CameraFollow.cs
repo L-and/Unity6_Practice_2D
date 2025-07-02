@@ -1,26 +1,25 @@
-using System;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] private Transform target;
-    [SerializeField] private float _smoothSPeed = 5f;
+    private Transform target;
+    
+    [SerializeField] private Vector3 offset;
+    [SerializeField] private float smoothSpeed = 5f;
+
     [SerializeField] private Vector2 minBound;
     [SerializeField] private Vector2 maxBound;
 
-    private Vector3 _offset;
-
-    private void Start()
+    void Start()
     {
-        target = GameObject.FindWithTag("Player").transform;
-        _offset = transform.position - target.position;
+        target = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
-        var destination = target.transform.position + _offset;
-        Vector3 smoothPos =  Vector3.Lerp(transform.position, destination, _smoothSPeed * Time.deltaTime);
-        
+        Vector3 destination = target.position + offset;
+        Vector3 smoothPos = Vector3.Lerp(transform.position, destination, smoothSpeed * Time.deltaTime);
+
         smoothPos.x = Mathf.Clamp(smoothPos.x, minBound.x, maxBound.x);
         smoothPos.y = Mathf.Clamp(smoothPos.y, minBound.y, maxBound.y);
         

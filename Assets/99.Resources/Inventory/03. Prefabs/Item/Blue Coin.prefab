@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 633589296897411177}
   - component: {fileID: 287362165006262073}
   - component: {fileID: 626160802768477329}
-  - component: {fileID: -4709561236831692602}
+  - component: {fileID: 5635344757692867044}
   m_Layer: 10
   m_Name: Blue Coin
   m_TagString: Untagged
@@ -153,7 +153,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-4709561236831692602
+--- !u!114 &5635344757692867044
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,8 +162,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3032979224499068230}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20891d3c588bb724b89ae2f392a81b64, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c8af898980948a48a5230729712c4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinType: 2
-  price: 1

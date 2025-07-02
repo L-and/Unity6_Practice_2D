@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1112405368924857496}
   - component: {fileID: 1943679855546237616}
   - component: {fileID: 6729433895609944937}
-  - component: {fileID: 3674717507038330952}
+  - component: {fileID: 806870191150509505}
   m_Layer: 10
   m_Name: Green Coin
   m_TagString: Untagged
@@ -153,7 +153,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3674717507038330952
+--- !u!114 &806870191150509505
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,8 +162,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3217062673195446565}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20891d3c588bb724b89ae2f392a81b64, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c8af898980948a48a5230729712c4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinType: 1
-  price: 2

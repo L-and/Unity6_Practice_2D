@@ -353,7 +353,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Base-01_0
+      name: Inventory Image
       rect:
         serializedVersion: 2
         x: 0
@@ -2148,7 +2148,6 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Base-01_0: 3924227284778434097
       Base-01_1: 1874887372963945904
       Base-01_10: -1496272520410376707
       Base-01_11: 8160045219647390997
@@ -2229,6 +2228,7 @@ TextureImporter:
       Base-01_8: 7691701027823125891
       Base-01_80: -6729332558515975304
       Base-01_9: -2842014097813584191
+      Inventory Image: 3924227284778434097
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

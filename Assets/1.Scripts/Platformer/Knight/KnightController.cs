@@ -3,13 +3,18 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class KnightController : MonoBehaviour
+public class KnightController : MonoBehaviour, IDamageable
 {
     [SerializeField] private KeyboardInput keyboardInput;
     [SerializeField] private JoystickInput joystickInput;
     
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
+
+    public float hp = 100f;
+    public float currHp;
+
+    private float attackDamage = 3f;
 
     private Vector2 _inputMoveDir;
     private bool _inputJump;
@@ -22,15 +27,12 @@ public class KnightController : MonoBehaviour
     private Rigidbody2D _rb;
     private Animator _anim;
     private Collider2D _collider;
+    [SerializeField] private Image hpBar;
 
     [SerializeField] private Button jumpButton;
     [SerializeField] private Button attackButtom;
 
     [SerializeField, ReadOnly]private KnightControllerState state;
-
-    private float[] originalCollSize = new float[2];
-    public float crouchColliderOffset;
-    public float crouchColliderSize;
 
     private float _prevDirX;
 
@@ -46,8 +48,9 @@ public class KnightController : MonoBehaviour
         jumpButton.onClick.AddListener(Jump);
         attackButtom.onClick.AddListener(Attack);
 
-        originalCollSize[0] = _collider.offset.y;
-        originalCollSize[1] = _collider.bounds.size.y;
+        
+        currHp = hp;
+        hpBar.fillAmount = currHp / hp;
     }
     
     void Update()
@@ -137,10 +140,16 @@ public class KnightController : MonoBehaviour
             state = KnightControllerState.ATTACK;
         
         // 스프라이트 플립
+        if (_inputMoveDir.x > 0.4f)
+        {
+            _prevDirX = 1;
+        }
+        else if (_inputMoveDir.x < -0.4f)
+        {
+            _prevDirX = -1;
+        }
         
-        var scaleX = _prevDirX > 0 ? 1 : -1;
-        transform.localScale = new Vector3(scaleX, 1, 1);
-        _prevDirX = _inputMoveDir.x;
+        transform.localScale = new Vector3(_prevDirX, 1, 1);
 
         // 앉기상태 콜라이더 크기변경
         // if (_inputMoveDir.y < 0)
@@ -185,7 +194,6 @@ public class KnightController : MonoBehaviour
 
     private void Attack()
     {
-        Debug.Log(_attackCoroutine == null);
         // 공격or콤보공격중이 아닐때 실행
         if (_attackCoroutine == null)
         {
@@ -210,8 +218,7 @@ public class KnightController : MonoBehaviour
             if (_anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                 break;
         }
-
-        Debug.Log("공격종료");
+        
         _attackCoroutine = null;
         
         if (!_anim.GetBool("isCombo"))
@@ -228,7 +235,6 @@ public class KnightController : MonoBehaviour
 
     IEnumerator CoCombo()
     {
-        Debug.Log("콤보시작");
         
         while (true)
         {
@@ -236,7 +242,6 @@ public class KnightController : MonoBehaviour
             if (_anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                 break;
         }
-        Debug.Log("콤보종료");
         _anim.SetBool("isCombo", false);
         _comboCoroutine = null;
         state = KnightControllerState.IDLE;
@@ -262,6 +267,18 @@ public class KnightController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("Monster"))
+        {
+            Debug.Log("몬스터 트리거");
+            if (other.GetComponent<IDamageable>() != null)
+            {
+                Debug.Log("몬스터 공격");
+
+                other.GetComponent<IDamageable>().TakeDamage(attackDamage);
+                other.GetComponent<Animator>().SetTrigger("Hit");
+            }
+        }
+        
         if (other.CompareTag("Ladder"))
         {
             _isLadder = true;
@@ -277,5 +294,20 @@ public class KnightController : MonoBehaviour
             _isLadder = false;
             _rb.gravityScale = 2f;
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currHp -= damage;
+        hpBar.fillAmount = currHp / hp; // 현재체력 / 최대체력
+        if (currHp <= 0f)
+            Death();
+    }
+
+    public void Death()
+    {
+        _anim.SetTrigger("Death");
+        _collider.enabled = false;
+        _rb.gravityScale = 0f;
     }
 }

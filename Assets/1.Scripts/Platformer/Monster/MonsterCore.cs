@@ -1,48 +1,56 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Platformer
 {
-    public abstract class MonsterCore : MonoBehaviour
+    public abstract class MonsterCore : MonoBehaviour, IDamageable
     {
         public enum MonsterState {IDLE, PATROL, TRACE, ATTACK}
         public MonsterState monsterState = MonsterState.IDLE;
-        
+
+        public ItemManager itemManager;
+
+        public Transform target;
         protected Animator _anim;
         protected Rigidbody2D _monsterRb;
         protected Collider2D _monsterColl;
-
-        public Transform target;
+        public Image hpBar;
         
         public float hp;
+        public float currHp;
         public float speed;
         public float attackCoolTime;
+        public float attackDamage;
         
         protected float _moveDir;
         protected float _targetDist;
 
         protected bool _isTrace;
-        protected virtual void Init(float hp, float speed, float attackCoolTime)
+        private bool _isDead;
+        protected virtual void Init(float hp, float speed, float attackCoolTime, float attackDamage)
         {
             this.hp = hp;
             this.speed = speed;
             this.attackCoolTime = attackCoolTime;
+            this.attackDamage = attackDamage;
+
+            itemManager = FindFirstObjectByType<ItemManager>();
             
             target = GameObject.FindGameObjectWithTag("Player").transform;
             
             _anim = GetComponent<Animator>();
             _monsterRb = GetComponent<Rigidbody2D>();
             _monsterColl = GetComponent<Collider2D>();
+
+            currHp = hp;
+            hpBar.fillAmount = currHp / hp;
         }
         
         private void Update()
         {
-            _targetDist = Vector3.Distance(transform.position, target.position);
-            Vector3 monsterDir = Vector3.right * _moveDir;
-            Vector3 playerDir = (transform.position - target.position).normalized;
-            float dotValue = Vector3.Dot(monsterDir, playerDir);
-            
-            _isTrace = dotValue > 0;
+            if (_isDead)
+                return;
             
             switch (monsterState)
             {
@@ -63,10 +71,16 @@ namespace Platformer
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log($"고블린 공격");
             if (other.CompareTag("Return"))
             {
                 _moveDir *= -1;
                 transform.localScale = new Vector3(_moveDir, 1, 1);
+            }
+            
+            if (other.GetComponent<IDamageable>() != null)
+            {
+                other.GetComponent<IDamageable>().TakeDamage(attackDamage);
             }
         }
         
@@ -79,6 +93,24 @@ namespace Platformer
         {
             if (newState != monsterState)
                 monsterState = newState;
+        }
+        
+        public void TakeDamage(float damage)
+        {
+            currHp -= damage;
+            hpBar.fillAmount = currHp / hp; // 현재체력 / 최대체력
+            if (currHp <= 0f)
+                Death();
+        }
+
+        public void Death()
+        {
+            _isDead = true;
+            _anim.SetTrigger("Death");
+            _monsterColl.enabled = false;
+            _monsterRb.gravityScale = 0f;
+        
+            itemManager.DropItem(transform.position);
         }
     }
 }

@@ -33,5 +33,6 @@ public class MonsterMove : MonoBehaviour
         _rb.AddForceX(Random.Range(-1f, 1f),  ForceMode2D.Impulse);
         _col.enabled = false;
     }
+
 }
  
